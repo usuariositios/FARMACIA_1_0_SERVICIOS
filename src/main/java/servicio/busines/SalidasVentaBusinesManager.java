@@ -36,7 +36,7 @@ public class SalidasVentaBusinesManager {
         IngresosVentaDetalleResource ivdr = new IngresosVentaDetalleResource(this.con);
         //FacturasEmitidasResource femr = new FacturasEmitidasResource(this.con);
         SalidasVentaDetalleIngresoResource ivdir = new SalidasVentaDetalleIngresoResource(this.con);        
-        SalidasVentaBusiness svb = new SalidasVentaBusiness();
+        SalidasVentaBusiness svb = new SalidasVentaBusiness();        
         
         try {
             s.getSalidasVenta().setCodSalidaVenta(svr.codigoSalidasVenta());
@@ -56,14 +56,13 @@ public class SalidasVentaBusinesManager {
                     ivdir.guardarSalidasVentaDetalleIngreso(sadi);
                 }
             }
-        }
-        //femr.generarFactura(s.getSalidasVenta());        
+        }        
+        //femr.generarFactura(s.getSalidasVenta());
         svb = s;
         
         } catch (Exception e) {
-            e.printStackTrace();
-            throw new Exception(e.getMessage());
-        
+            e.printStackTrace();            
+            //throw new Exception(e.getMessage());        
         }
         
         return svb;

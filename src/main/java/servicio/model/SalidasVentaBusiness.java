@@ -23,6 +23,9 @@ public class SalidasVentaBusiness {
     List<SalidasVentaDetalle> salidasVentaDetalleList = new ArrayList<SalidasVentaDetalle>(); 
     
     FacturasEmitidas facturasEmitidas = new FacturasEmitidas();
+    
+    CajaChica cajaChica = new CajaChica();
+    
 
     public SalidasVenta getSalidasVenta() {
         return salidasVenta;
@@ -48,9 +51,13 @@ public class SalidasVentaBusiness {
         this.facturasEmitidas = facturasEmitidas;
     }
 
-    
-    
-    
+    public CajaChica getCajaChica() {
+        return cajaChica;
+    }
+
+    public void setCajaChica(CajaChica cajaChica) {
+        this.cajaChica = cajaChica;
+    }
     
     
 }

@@ -29,7 +29,8 @@ import servicio.resource.PaisResource;
 public class PaisService {
     
     @Path("/cargarPaisItem")
-    @GET @Produces("application/json")
+    @GET 
+    @Produces("application/json")
     public List<SelectItem> cargarPaisItem() {
         PaisResource pr = new PaisResource();
         return pr.cargarPaisItem();

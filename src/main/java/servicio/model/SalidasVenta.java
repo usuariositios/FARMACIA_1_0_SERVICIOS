@@ -30,7 +30,7 @@ public class SalidasVenta extends bean{
     int nroSalidaVenta = 0;
     int codFacturaEmitida = 0;
     int nroFactura = 0; 
-    Personal personalVenta = new Personal();
+    Personal personalVenta = new Personal();//encargado
     TiposVenta tiposVenta = new TiposVenta();
     TiposPago tiposPago = new TiposPago();
     String fechaPagoCredito = new String();

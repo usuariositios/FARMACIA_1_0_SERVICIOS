@@ -40,7 +40,7 @@ public class ProductoResource {
             String query =  " SELECT p.cod_producto,p.codigo_producto,p.nombre_producto,p.descripcion_producto,p.cod_grupo_producto,g.nombre_grupo_producto,p.impuesto_producto, " +
                             " p.cod_proveedor1,pr1.nombre_proveedor nombre_proveedor1,p.cod_proveedor2,pr2.nombre_proveedor nombre_proveedor2,p.descripcion_corta_producto,p.stock_minimo,p.stock_maximo,p.aviso_stock_minimo, " +
                             " p.fecha_registro,p.cod_empaque_externo,e.nombre_empaque_externo,p.cantidad_por_caja,p.observaciones,p.precio_compra,p.precio_almacen, " +
-                            " p.precio_tienda,p.precio_iva,p.cod_estado_registro,er.nombre_estado_registro,u.cod_unidad_medida,u.nombre_unidad_medida,sg.cod_sub_grupo,sg.nombre_sub_grupo,uv.cod_unidad_medida cod_unidad_medida_compra,"+
+                            " p.precio_venta,p.precio_iva,p.cod_estado_registro,er.nombre_estado_registro,u.cod_unidad_medida,u.nombre_unidad_medida,sg.cod_sub_grupo,sg.nombre_sub_grupo,uv.cod_unidad_medida cod_unidad_medida_compra,"+
                             " uv.nombre_unidad_medida nombre_unidad_medida_compra,p.cant_p_compra_venta,p.porc_desc_max,p.cod_barras_producto,imagen_producto,"+
                     
                             " p.cod_forma_farmaceutica,ff.nombre_campo nombre_forma_farmaceutica, p.cod_accion_terapeutica, at.nombre_campo nombre_accion_terapeutica, "+
@@ -49,7 +49,7 @@ public class ProductoResource {
                             " FROM " +
                             " public.productos p " +                            
                             " inner join public.estados_registro er on er.cod_estado_registro = p.cod_estado_registro " +
-                            " inner join public.unidades_medida u on u.cod_unidad_medida = p.cod_unidad_medida " +
+                            " LEFT OUTER JOIN public.unidades_medida u on u.cod_unidad_medida = p.cod_unidad_medida " +
                     
                             " left outer join ( select tdfm.* from ventas.tabla_detalle tdfm  " +
                             " INNER JOIN ventas.tabla tfm ON tdfm.cod_tabla = tfm.cod_tabla AND tfm.nombre_tabla = 'FORMA_FARMACEUTICA' ) ff on ff.cod_campo = p.cod_forma_farmaceutica " +
@@ -83,13 +83,13 @@ public class ProductoResource {
                             if(pr.getAccionTerapeutica().getCodAccionTerapeutica() !=0){query+=" AND p.cod_accion_terapeutica = '"+pr.getAccionTerapeutica().getCodAccionTerapeutica()+"' ";}
                             if(pr.getPresentacionesProducto().getCodPresentacionProducto() !=0){query+=" AND p.cod_presentacion = '"+pr.getPresentacionesProducto().getCodPresentacionProducto()+"' ";}
                             
-                            //if(pr.getProveedores1().getCodProveedor()!=0){query+=" AND p.cod_proveedor1 = '"+pr.getProveedores1().getCodProveedor()+"' ";}
+                            if(pr.getProveedores1().getCodProveedor()!=0){query+=" AND p.cod_proveedor1 = '"+pr.getProveedores1().getCodProveedor()+"' ";}
                             if(pr.getUnidadesMedida().getCodUnidadMedida()!=0){query+=" AND p.cod_unidad_medida = '"+pr.getUnidadesMedida().getCodUnidadMedida()+"' ";}
                             if(!pr.getObservaciones().trim().equals("")){query+=" AND UPPER(p.observaciones) like '%"+pr.getObservaciones().toUpperCase()+"%' ";}
                             if(pr.getEstadosRegistro().getCodEstado()!=0){query+=" AND p.cod_estado_registro = '"+pr.getEstadosRegistro().getCodEstado()+"' ";}
                             if(!pr.getCodBarrasProducto().trim().equals("")){query+=" AND p.cod_barras_producto = '"+pr.getCodBarrasProducto()+"' ";}
                             if(!pr.getSinCodProducto().equals("")){query+=" AND p.cod_producto not in ("+pr.getSinCodProducto()+") ";}
-                            if(pr.getCodProducto()!=0){query+=" AND p.cod_producto = "+pr.getCodProducto()+"  ";}
+                            if(pr.getCodProducto()!=0){query+=" AND p.cod_producto = "+pr.getCodProducto()+"  ";}                            
                             if(pr.getCategoriaProducto().getCodCategoriaProducto()!=0){query+=" AND p.cod_categoria = "+pr.getCategoriaProducto().getCodCategoriaProducto()+"  ";}
                             query +=" order by p.cod_producto desc ";
                             if(pr.getFilaInicial()>0)
@@ -125,7 +125,7 @@ public class ProductoResource {
                 p.setObservaciones(rs.getString("observaciones"));
                 p.setPrecioCompra(rs.getDouble("precio_compra"));
                 p.setPrecioAlmacen(rs.getDouble("precio_almacen"));
-                p.setPrecioTienda(rs.getDouble("precio_tienda"));
+                p.setPrecioVenta(rs.getDouble("precio_venta"));
                 p.setPrecioIva(rs.getDouble("precio_iva"));
                 p.getEstadosRegistro().setCodEstado(rs.getInt("cod_estado_registro"));
                 p.getEstadosRegistro().setNombreEstado(rs.getString("nombre_estado_registro"));
@@ -192,12 +192,12 @@ public class ProductoResource {
                     "(cod_producto,  nombre_producto,  descripcion_producto,  cod_grupo_producto,  impuesto_producto,  cod_proveedor1, " +
                     " cod_proveedor2,  descripcion_corta_producto,  stock_minimo,  stock_maximo,  aviso_stock_minimo, " +
                     " fecha_registro, cod_empaque_externo,  cantidad_por_caja,  observaciones,  precio_compra, " +
-                    " precio_almacen, precio_tienda,  precio_iva,  cod_estado_registro,cod_unidad_medida,cod_sub_grupo,cod_unidad_medida_compra,cant_p_compra_venta,porc_desc_max,codigo_producto,cod_barras_producto,imagen_producto,"+
+                    " precio_almacen, precio_venta,  precio_iva,  cod_estado_registro,cod_unidad_medida,cod_sub_grupo,cod_unidad_medida_compra,cant_p_compra_venta,porc_desc_max,codigo_producto,cod_barras_producto,imagen_producto,"+
                     " cod_categoria, cod_accion_terapeutica,cod_laboratorio, precio_compra_blister, precio_venta_blister, cant_unidades_blister, precio_compra_caja, precio_venta_caja, cant_unidades_caja,cod_presentacion,principio_activo,psicotropico,ubicacion,cod_nombre_generico,cod_forma_farmaceutica ) " +
                     " VALUES (  (select nextval('public.\"seqProducto\"')),  '"+p.getNombreProducto()+"',  '"+p.getDescripcionProducto()+"',  '"+p.getGrupoProducto().getCodGrupoProducto()+"',  '"+p.getImpuestoProducto()+"', " +
                     " '"+p.getProveedores1().getCodProveedor()+"',  '"+p.getProveedores2().getCodProveedor()+"',  '"+p.getDescripcionCortaProducto()+"',  '"+p.getStockMinimo()+"',  '"+p.getStockMaximo()+"', " +
                     " '"+p.getAvisoStockMinimo()+"', CURRENT_DATE ,  '"+p.getEmpaqueExterno().getCodEmpaqueExterno()+"',  '"+p.getCantidadPorCaja()+"',  '"+p.getObservaciones()+"', " +
-                    " '"+p.getPrecioCompra()+"',  '"+p.getPrecioAlmacen()+"',  '"+p.getPrecioTienda()+"',  '"+p.getPrecioIva()+"',  '"+p.getEstadosRegistro().getCodEstado()+"','"+p.getUnidadesMedida().getCodUnidadMedida()+"','"+p.getSubGruposProducto().getCodSubgrupo()+"',"+
+                    " '"+p.getPrecioCompra()+"',  '"+p.getPrecioAlmacen()+"',  '"+p.getPrecioVenta()+"',  '"+p.getPrecioIva()+"',  '"+p.getEstadosRegistro().getCodEstado()+"','"+p.getUnidadesMedida().getCodUnidadMedida()+"','"+p.getSubGruposProducto().getCodSubgrupo()+"',"+
                     " '"+p.getUnidadesMedidaCompra().getCodUnidadMedida()+"','"+p.getCantPCompraVenta()+"','"+p.getPorcentajeDescuentoMaximo()+"','"+p.getCodigoProducto()+"','"+p.getCodBarrasProducto()+"','"+p.getImagenProducto()+"',"+
                     " '"+p.getCategoriaProducto().getCodCategoriaProducto()+"','"+p.getAccionTerapeutica().getCodAccionTerapeutica()+"','"+p.getLaboratorio().getCodLaboratorio()+"','"+p.getPrecioCompraBlister()+"','"+p.getPrecioVentaBlister()+"','"+p.getCantUnidadesBlister()+"',"
                     + "'"+p.getPrecioCompraCaja()+"','"+p.getPrecioVentaCaja()+"','"+p.getCantUnidadesCaja()+"','"+p.getPresentacionesProducto().getCodPresentacionProducto()+"','"+p.getPrincipioActivo()+"','"+p.getPsicotropico()+"','"+p.getUbicacion()+"',"
@@ -251,7 +251,7 @@ public class ProductoResource {
                             "  observaciones = '"+p.getObservaciones()+"', " +
                             "  precio_compra = '"+p.getPrecioCompra()+"', " +
                             "  precio_almacen = '"+p.getPrecioAlmacen()+"', " +
-                            "  precio_tienda = '"+p.getPrecioTienda()+"', " +
+                            "  precio_venta = '"+p.getPrecioVenta()+"', " +
                             "  precio_iva = '"+p.getPrecioIva()+"', " +
                             "  cod_estado_registro = '"+p.getEstadosRegistro().getCodEstado()+"',"+
                             "  cod_unidad_medida = '"+p.getUnidadesMedida().getCodUnidadMedida()+"',"+

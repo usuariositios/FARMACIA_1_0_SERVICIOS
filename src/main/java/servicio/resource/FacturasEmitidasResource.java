@@ -4,6 +4,7 @@
  */
 package servicio.resource;
 
+import java.math.BigInteger;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -14,6 +15,7 @@ import java.util.Date;
 import java.util.List;
 import servicio.model.SelectItem;
 import servicio.busines.SalidasVentaBusinesManager;
+import servicio.model.CajaChicaDetalle;
 import servicio.model.FacturaDosificacion;
 import servicio.model.FacturasEmitidas;
 import servicio.model.SalidasVenta;
@@ -47,11 +49,14 @@ public class FacturasEmitidasResource extends BeanResource {
             
             String consulta =   " SELECT f.cod_factura_emitida,f.nro_factura,f.razon_social,f.nit_cliente,f.nro_autorizacion, " +
                                 "  f.fecha_factura,f.monto_sub_total,f.monto_descuento,f.monto_total,f.codigo_control, " +
-                                "  f.cod_dosificacion,e.cod_estado_registro,e.nombre_estado_registro,monto_iva,f.cod_salida_venta " +
+                                "  f.cod_dosificacion,e.cod_estado_registro,e.nombre_estado_registro,monto_iva,f.cod_salida_venta,"
+                              + " f.monto_efectivo, f.monto_vuelto, tp.cod_tipo_pago,tp.nombre_tipo_pago " +
                                 " FROM " +
                                 "  ventas.facturas_emitidas f inner join public.estados_registro e " +
-                                "  on e.cod_estado_registro = f.cod_estado_registro  " +
-                                " where 0=0   ";                    
+                                "  on e.cod_estado_registro = f.cod_estado_registro "
+                              + " left outer join public.tipos_pago tp on tp.cod_tipo_pago = f.cod_tipo_pago  " +
+                                " where 0=0   ";
+            if(f.getCodFacturaEmitida()!=0){consulta +=" and  f.cod_factura_emitida ='"+f.getCodFacturaEmitida()+"' ";}
             consulta += " ORDER BY f.cod_factura_emitida DESC LIMIT 10 OFFSET "+f.getFilaInicial()+"  ;";
             
             
@@ -68,7 +73,7 @@ public class FacturasEmitidasResource extends BeanResource {
                 f1.setRazonSocial(rs.getString("razon_social"));
                 f1.setNitCliente(rs.getString("nit_cliente"));
                 f1.setNroAutorizacion(rs.getString("nro_autorizacion"));
-                f1.setFechaFactura(sdf.format(rs.getTimestamp("fecha_factura")));
+                f1.setFechaFactura(sdf1.format(rs.getTimestamp("fecha_factura")));
                 f1.setMontoSubTotal(rs.getDouble("monto_sub_total"));
                 f1.setMontoDescuento(rs.getDouble("monto_descuento"));
                 f1.setMontoTotal(rs.getDouble("monto_total"));
@@ -78,6 +83,11 @@ public class FacturasEmitidasResource extends BeanResource {
                 f1.getEstadosRegistro().setNombreEstado(rs.getString("nombre_estado_registro"));
                 f1.setMontoIva(rs.getDouble("monto_iva"));
                 f1.getSalidasVenta().setCodSalidaVenta(rs.getInt("cod_salida_venta"));
+                f1.setMontoEfectivo(rs.getDouble("monto_efectivo"));
+                f1.setMontoVuelto(rs.getDouble("monto_vuelto"));
+                f1.getTiposPago().setCodTipoPago(rs.getInt("cod_tipo_pago"));
+                f1.getTiposPago().setNombreTipoPago(rs.getString("nombre_tipo_pago"));
+                
                 
                 
                 
@@ -131,10 +141,11 @@ public class FacturasEmitidasResource extends BeanResource {
             String cons = "  INSERT INTO ventas.facturas_emitidas( " +
                             "  cod_factura_emitida, nro_factura,  razon_social,  nit_cliente,  nro_autorizacion,  fecha_factura, " +
                             "  monto_sub_total,  monto_descuento,  monto_total,  codigo_control,  cod_dosificacion,  cod_estado_registro, " +
-                            "  cod_salida_venta,monto_iva) " +
+                            "  cod_salida_venta,monto_iva,monto_efectivo, monto_vuelto, cod_tipo_pago) " +
                             "VALUES ( '"+f.getCodFacturaEmitida()+"' , '"+f.getNroFactura()+"',  '"+f.getRazonSocial()+"',  '"+f.getNitCliente()+"',  '"+f.getFechaFactura()+"', " +
                             "  '"+f.getFechaFactura()+"',  '"+f.getMontoSubTotal()+"',  '"+f.getMontoDescuento()+"',  '"+f.getMontoTotal()+"',  '"+f.getCodigoControl()+"', " +
-                            "  '"+f.getFacturaDosificacion().getCodDosificacion()+"',  '"+f.getEstadosRegistro().getCodEstado()+"',  '"+f.getSalidasVenta().getCodSalidaVenta()+"','"+f.getMontoIva()+"'); ";
+                            "  '"+f.getFacturaDosificacion().getCodDosificacion()+"',  '"+f.getEstadosRegistro().getCodEstado()+"',  '"+f.getSalidasVenta().getCodSalidaVenta()+"','"+f.getMontoIva()+"',"
+                    + "'"+f.getMontoEfectivo()+"','"+f.getMontoVuelto()+"','"+f.getTiposPago().getCodTipoPago()+"'); ";
             
             
             System.out.println("cons " + cons);
@@ -174,7 +185,10 @@ public class FacturasEmitidasResource extends BeanResource {
                             "  cod_dosificacion = '"+f.getFacturaDosificacion().getCodDosificacion()+"', " +
                             "  cod_estado_registro = '"+f.getEstadosRegistro().getCodEstado()+"', " +
                             "  cod_salida_venta = '"+f.getSalidasVenta().getCodSalidaVenta()+"', " +
-                            "  monto_iva = '"+f.getMontoIva()+"' " +
+                            "  monto_iva = '"+f.getMontoIva()+"',"
+                    + " monto_efectivo = '"+f.getMontoEfectivo()+"', "
+                    + " monto_vuelto= '"+f.getMontoVuelto()+"' , "
+                    + " cod_tipo_pago = '"+f.getTiposPago().getCodTipoPago()+"' " +
                             "  WHERE  " +
                             "  cod_factura_emitida = '"+f.getCodFacturaEmitida()+"'  ";
 
@@ -228,6 +242,7 @@ public class FacturasEmitidasResource extends BeanResource {
     public  FacturasEmitidas buscarFacturasEmitidas(FacturasEmitidas f){
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
         SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        SimpleDateFormat sdf2 = new SimpleDateFormat("yyyyMMddHHmmssSSS");
         
         FacturasEmitidas f1 = new FacturasEmitidas();
         try {
@@ -237,10 +252,11 @@ public class FacturasEmitidasResource extends BeanResource {
             
             String consulta =   " SELECT f.cod_factura_emitida,f.nro_factura,f.razon_social,f.nit_cliente,f.nro_autorizacion, " +
                                 "  f.fecha_factura,f.monto_sub_total,f.monto_descuento,f.monto_total,f.codigo_control, " +
-                                "  f.cod_dosificacion,e.cod_estado_registro,e.nombre_estado_registro,f.monto_iva " +
+                                "  f.cod_dosificacion,e.cod_estado_registro,e.nombre_estado_registro,f.monto_iva,"
+                    + " f.monto_efectivo, f.monto_vuelto, tp.cod_tipo_pago,tp.nombre_tipo_pago " +
                                 " FROM " +
-                                "  ventas.facturas_emitidas f inner join public.estados_registro e " +
-                                "  on e.cod_estado_registro = f.cod_estado_registro  " +
+                                "  ventas.facturas_emitidas f inner join public.estados_registro e   on e.cod_estado_registro = f.cod_estado_registro  "
+                                + " left outer join public.tipos_pago tp on tp.cod_tipo_pago = f.cod_tipo_pago  " +                    
                                 " where 0=0   ";                                
             if(f.getCodFacturaEmitida()!=0){consulta+=" AND f.cod_factura_emitida = '"+f.getCodFacturaEmitida() +"' ";}
             
@@ -257,7 +273,7 @@ public class FacturasEmitidasResource extends BeanResource {
                 f1.setRazonSocial(rs.getString("razon_social"));
                 f1.setNitCliente(rs.getString("nit_cliente"));
                 f1.setNroAutorizacion(rs.getString("nro_autorizacion"));
-                f1.setFechaFactura(sdf.format(rs.getTimestamp("fecha_factura")));
+                f1.setFechaFactura(sdf2.format(rs.getTimestamp("fecha_factura")));
                 f1.setMontoSubTotal(rs.getDouble("monto_sub_total"));
                 f1.setMontoDescuento(rs.getDouble("monto_descuento"));
                 f1.setMontoTotal(rs.getDouble("monto_total"));
@@ -266,6 +282,10 @@ public class FacturasEmitidasResource extends BeanResource {
                 f1.getEstadosRegistro().setCodEstado(rs.getInt("cod_estado_registro"));
                 f1.getEstadosRegistro().setNombreEstado(rs.getString("nombre_estado_registro"));
                 f1.setMontoIva(rs.getDouble("monto_iva"));
+                f1.setMontoEfectivo(rs.getDouble("monto_efectivo"));
+                f1.setMontoVuelto(rs.getDouble("monto_vuelto"));
+                f1.getTiposPago().setCodTipoPago(rs.getInt("cod_tipo_pago"));
+                f1.getTiposPago().setNombreTipoPago(rs.getString("nombre_tipo_pago"));
                 
             }
             rs.close();
@@ -328,14 +348,14 @@ public class FacturasEmitidasResource extends BeanResource {
         //Utiles.closeConnection();
         return nroFactura;
     }
-    public  FacturasEmitidas generarFactura(SalidasVenta sa) throws Exception{
+    public  FacturasEmitidas generarFactura(SalidasVentaBusiness sb) throws Exception{
         
-        
+        SalidasVenta sa = sb.getSalidasVenta();
         
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd"); //yyyy/MM/dd HH:mm:ss
         //SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         int guardado = 0;
-        FacturasEmitidas f = new FacturasEmitidas();
+        FacturasEmitidas f = sb.getFacturasEmitidas(); //new FacturasEmitidas();
         FacturaDosificacionResource fdr = new FacturaDosificacionResource();
         SalidasVentaDetalleResource svdr = new SalidasVentaDetalleResource();
         try {
@@ -357,7 +377,7 @@ public class FacturasEmitidasResource extends BeanResource {
             sd.setSalidasVenta(sa);
             sd= svdr.subTotalSalidaVentaDetalle(sd);
             f.setMontoSubTotal(sd.getMontoSubTotal());
-            f.setMontoDescuento(sd.getMontoDescuento());
+            f.setMontoDescuento(sa.getMontoDescuento());
             f.setMontoTotal(sa.getMontoTotal());//sd.getMontoTotal() aun no esta en base de datos por eso se deduce del mismo objeto detalle
             ControlCode controlCode = new ControlCode();
             f.setCodigoControl(controlCode.generate(f.getNroAutorizacion(), String.valueOf(f.getNroFactura()), f.getNitCliente(), f.getFechaFactura(), f.getMontoTotal().toString(), f.getFacturaDosificacion().getLlaveDosificacion()));
@@ -442,6 +462,9 @@ public class FacturasEmitidasResource extends BeanResource {
         SalidasVentaBusiness svb = new SalidasVentaBusiness();
         double montoTotal = 0.0;
         
+        CajaChicaDetalleResource ccr = new CajaChicaDetalleResource(this.con);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss"); //yyyy/MM/dd HH:mm:ss
+        
         try {
             s.getSalidasVenta().setCodSalidaVenta(svr.codigoSalidasVenta());
             s.getSalidasVenta().setNroSalidaVenta(svr.nroSalidaVenta(s.getSalidasVenta()));
@@ -462,9 +485,20 @@ public class FacturasEmitidasResource extends BeanResource {
                 }
             }
         }
-        s.getSalidasVenta().setMontoTotal(montoTotal);
-        femr.generarFactura(s.getSalidasVenta());        
+        s.getSalidasVenta().setMontoSubTotal(montoTotal);//sin el descuento
+        FacturasEmitidas f = femr.generarFactura(s);
         svb = s;
+        svb.setFacturasEmitidas(f);
+        
+        
+        //guardamos caja chica
+        CajaChicaDetalle c = new CajaChicaDetalle();
+        c.setCajaChica(s.getCajaChica());
+        c.setMontoIngreso(s.getFacturasEmitidas().getMontoTotal());
+        c.setFacturasEmitidas(s.getFacturasEmitidas());
+        c.setFechaCajaChicaDetalle(sdf.format(new Date()));
+        c.setDescripcion("por venta factura nro " + f.getNroFactura());
+        ccr.guardarCajaChicaDetalle(c);
         
         } catch (Exception e) {
             e.printStackTrace();
@@ -502,6 +536,10 @@ public class FacturasEmitidasResource extends BeanResource {
         
         return s;
     }
+    
+    
+    
+    
     
     
     

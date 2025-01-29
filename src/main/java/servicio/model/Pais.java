@@ -6,7 +6,7 @@ package servicio.model;
 
 /**
  *
- * @author OSCAR VALDIVIA
+ * @author Henry Valdivia
  */
 public class Pais {
     int codPais = 0;

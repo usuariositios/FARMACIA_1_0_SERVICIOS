@@ -39,7 +39,7 @@ public class SalidasVentaDetalleIngresoResource extends BeanResource {
             Utiles utiles = new Utiles();
             utiles.getConnection();
                     
-            String consulta =   " SELECT ia.fecha_ingreso_venta,ia.nro_ingreso_venta,i.cod_almacen_venta,  i.cod_ingreso_venta,  i.cod_producto,  i.cant_ingreso,  i.total_monto,  i.precio_unitario,  i.costo_unitario, " +
+            String consulta =   " SELECT ia.fecha_ingreso_venta,ia.nro_ingreso_venta,i.cod_almacen_venta,  i.cod_ingreso_venta,  i.cod_producto,  i.cant_ingreso,  i.total_monto,  i.precio_compra,  i.precio_venta, " +
                                 " i.sub_total_monto,  i.cod_estado_registro,  i.cant_restante,i.glosa,u.cod_unidad_medida,u.nombre_unidad_medida,sadi.cant_sacar,sadi.cod_salida_venta " +
                                 " FROM ventas.salidas_venta_detalle_ingreso sadi " +
                                 " inner join ventas.ingresos_venta_detalle i on sadi.cod_ingreso_venta = i.cod_ingreso_venta and sadi.cod_producto = i.cod_producto " +
@@ -53,7 +53,7 @@ public class SalidasVentaDetalleIngresoResource extends BeanResource {
                                 " order by ia.fecha_ingreso_venta, ia.nro_ingreso_venta ";
             
             consulta =  " SELECT ia.fecha_ingreso_venta,ia.nro_ingreso_venta,i.cod_almacen_venta,  i.cod_ingreso_venta,  i.cod_producto,  i.cant_ingreso,   " +
-                        " i.total_monto,  i.precio_unitario,  i.costo_unitario,   i.sub_total_monto,  i.cod_estado_registro,i.cant_restante,i.glosa, " +
+                        " i.total_monto,  i.precio_compra,  i.precio_venta,   i.sub_total_monto,  i.cod_estado_registro,i.cant_restante,i.glosa, " +
                         " u.cod_unidad_medida,u.nombre_unidad_medida,coalesce(sadi.cant_sacar,0) cant_sacar,sadi.cod_salida_venta,i.cod_tipo_envase, i.nro_lote,i.fecha_fabricacion,i.fecha_vencimiento    " +
                         " FROM ventas.ingresos_venta_detalle i    " +
                         " inner join ventas.ingresos_venta ia on ia.cod_ingreso_venta = i.cod_ingreso_venta    " +
@@ -84,8 +84,8 @@ public class SalidasVentaDetalleIngresoResource extends BeanResource {
                 sadi.getIngresosVentaDetalle().getProductos().setCodProducto(rs.getInt("cod_producto"));
                 sadi.getIngresosVentaDetalle().setCantIngreso(rs.getDouble("cant_ingreso"));
                 sadi.getIngresosVentaDetalle().setTotalMonto(rs.getDouble("total_monto"));
-                sadi.getIngresosVentaDetalle().setPrecioUnitario(rs.getDouble("precio_unitario"));
-                sadi.getIngresosVentaDetalle().setCostoUnitario(rs.getDouble("costo_unitario"));
+                sadi.getIngresosVentaDetalle().setPrecioCompra(rs.getDouble("precio_compra"));
+                sadi.getIngresosVentaDetalle().setPrecioVenta(rs.getDouble("precio_venta"));
                 sadi.getIngresosVentaDetalle().setSubTotalMonto(rs.getDouble("sub_total_monto"));
                 sadi.getIngresosVentaDetalle().getEstadosRegistro().setCodEstado(rs.getInt("cod_estado_registro"));
                 sadi.getIngresosVentaDetalle().setCantRestante(rs.getDouble("cant_restante"));
@@ -231,14 +231,14 @@ public class SalidasVentaDetalleIngresoResource extends BeanResource {
     }
     public  List<SalidasVentaDetalleIngreso> etiquetasSalidaVentaDetalleIngreso(SalidasVentaDetalleIngreso s)throws Exception{
         List<SalidasVentaDetalleIngreso> salidaAlmacenDetalleIngresoList =new ArrayList<SalidasVentaDetalleIngreso>();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
-        SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        SimpleDateFormat sdf1 = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
         double cantidadRestante = 0.0;
         try {
             Utiles utiles = new Utiles();
             utiles.getConnection();
             //Statement st = utiles.getCon().createStatement();
-            String consulta =   "  SELECT ia.fecha_ingreso_venta,ia.nro_ingreso_venta,i.cod_almacen_venta,  i.cod_ingreso_venta,  i.cod_producto,  i.cant_ingreso,  i.total_monto,  i.precio_unitario,  i.costo_unitario, " +
+            String consulta =   "  SELECT ia.fecha_ingreso_venta,ia.nro_ingreso_venta,i.cod_almacen_venta,  i.cod_ingreso_venta,  i.cod_producto,  i.cant_ingreso,  i.total_monto,  i.precio_compra,  i.precio_venta, " +
                                 "  i.sub_total_monto,  i.cod_estado_registro,  i.cant_restante,i.glosa,u.cod_unidad_medida,u.nombre_unidad_medida,i.cod_tipo_envase, i.nro_lote,i.fecha_fabricacion,i.fecha_vencimiento " +
                                 "  FROM ventas.ingresos_venta_detalle i " +
                                 "  inner join ventas.ingresos_venta ia on ia.cod_ingreso_venta = i.cod_ingreso_venta " +
@@ -266,8 +266,8 @@ public class SalidasVentaDetalleIngresoResource extends BeanResource {
                 sa.getIngresosVentaDetalle().getProductos().setCodProducto(rs.getInt("cod_producto"));
                 sa.getIngresosVentaDetalle().setCantIngreso(rs.getDouble("cant_ingreso"));
                 sa.getIngresosVentaDetalle().setTotalMonto(rs.getDouble("total_monto"));
-                sa.getIngresosVentaDetalle().setPrecioUnitario(rs.getDouble("precio_unitario"));
-                sa.getIngresosVentaDetalle().setCostoUnitario(rs.getDouble("costo_unitario"));
+                sa.getIngresosVentaDetalle().setPrecioCompra(rs.getDouble("precio_compra"));
+                sa.getIngresosVentaDetalle().setPrecioVenta(rs.getDouble("precio_venta"));
                 sa.getIngresosVentaDetalle().setSubTotalMonto(rs.getDouble("sub_total_monto"));
                 sa.getIngresosVentaDetalle().setCantRestante(rs.getDouble("cant_restante"));
                 sa.getIngresosVentaDetalle().getUnidadesMedida().setCodUnidadMedida(rs.getInt("cod_unidad_medida"));

@@ -33,7 +33,7 @@ public class Productos extends bean{
     String observaciones = "";
     double precioCompra = 0.0;
     double precioAlmacen = 0.0;
-    double precioTienda = 0.0;
+    double precioVenta = 0.0;
     double precioIva = 0.0;
     EstadosRegistro estadosRegistro = new EstadosRegistro();
     String sinCodProducto ="";
@@ -216,13 +216,15 @@ public class Productos extends bean{
         this.precioAlmacen = precioAlmacen;
     }
 
-    public double getPrecioTienda() {
-        return precioTienda;
+    public double getPrecioVenta() {
+        return precioVenta;
     }
 
-    public void setPrecioTienda(double precioTienda) {
-        this.precioTienda = precioTienda;
+    public void setPrecioVenta(double precioVenta) {
+        this.precioVenta = precioVenta;
     }
+
+    
 
     public double getPrecioIva() {
         return precioIva;

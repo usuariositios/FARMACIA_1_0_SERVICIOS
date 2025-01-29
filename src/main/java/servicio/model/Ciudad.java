@@ -11,6 +11,7 @@ package servicio.model;
 public class Ciudad {
     int codCiudad = 0;
     String nombreCiudad = "";
+    Pais pais = new Pais();
 
     public int getCodCiudad() {
         return codCiudad;
@@ -27,6 +28,16 @@ public class Ciudad {
     public void setNombreCiudad(String nombreCiudad) {
         this.nombreCiudad = nombreCiudad;
     }
+
+    public Pais getPais() {
+        return pais;
+    }
+
+    public void setPais(Pais pais) {
+        this.pais = pais;
+    }
+    
+    
     
     
 }

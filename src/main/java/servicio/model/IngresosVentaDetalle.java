@@ -23,8 +23,8 @@ public class IngresosVentaDetalle extends bean{
     Productos productos = new Productos();
     Double cantIngreso = 0.0;
     Double totalMonto = 0.0;
-    Double precioUnitario = 0.0;
-    Double costoUnitario = 0.0;
+    Double precioCompra = 0.0;
+    Double precioVenta = 0.0;
     Double subTotalMonto = 0.0;
     EstadosRegistro estadosRegistro = new EstadosRegistro();
     Double cantRestante = 0.0;
@@ -81,21 +81,23 @@ public class IngresosVentaDetalle extends bean{
         this.totalMonto = totalMonto;
     }
 
-    public Double getPrecioUnitario() {
-        return precioUnitario;
+    public Double getPrecioCompra() {
+        return precioCompra;
     }
 
-    public void setPrecioUnitario(Double precioUnitario) {
-        this.precioUnitario = precioUnitario;
+    public void setPrecioCompra(Double precioCompra) {
+        this.precioCompra = precioCompra;
     }
 
-    public Double getCostoUnitario() {
-        return costoUnitario;
+    public Double getPrecioVenta() {
+        return precioVenta;
     }
 
-    public void setCostoUnitario(Double costoUnitario) {
-        this.costoUnitario = costoUnitario;
+    public void setPrecioVenta(Double precioVenta) {
+        this.precioVenta = precioVenta;
     }
+
+    
 
     public Double getSubTotalMonto() {
         return subTotalMonto;

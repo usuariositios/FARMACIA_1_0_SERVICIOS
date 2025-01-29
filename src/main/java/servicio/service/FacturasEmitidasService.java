@@ -97,7 +97,8 @@ public class FacturasEmitidasService {
     @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public FacturasEmitidas generarFactura(SalidasVenta sa) throws Exception{
-        Utiles utiles = new Utiles();
+        FacturasEmitidas resp = new FacturasEmitidas();
+        /*Utiles utiles = new Utiles();
         utiles.getConnection();
         utiles.getCon().setAutoCommit(false);
         FacturasEmitidas resp = new FacturasEmitidas();
@@ -110,7 +111,7 @@ public class FacturasEmitidasService {
             e.printStackTrace();
             utiles.rollback();
         }
-        utiles.closeConnection();
+        utiles.closeConnection();*/
         return resp;
     }
     

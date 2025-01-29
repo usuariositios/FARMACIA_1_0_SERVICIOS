@@ -27,6 +27,9 @@ public class FacturasEmitidas extends bean{
     @JsonIgnore
     SalidasVenta salidasVenta = new SalidasVenta();
     Double montoIva = 0.0;
+    Double montoEfectivo = 0.0;
+    Double montoVuelto = 0.0;
+    TiposPago tiposPago = new TiposPago();
     
 
     public int getCodFacturaEmitida() {
@@ -140,10 +143,29 @@ public class FacturasEmitidas extends bean{
     public void setMontoIva(Double montoIva) {
         this.montoIva = montoIva;
     }
-            
-    
-    
-    
-    
+
+    public Double getMontoEfectivo() {
+        return montoEfectivo;
+    }
+
+    public void setMontoEfectivo(Double montoEfectivo) {
+        this.montoEfectivo = montoEfectivo;
+    }
+
+    public Double getMontoVuelto() {
+        return montoVuelto;
+    }
+
+    public void setMontoVuelto(Double montoVuelto) {
+        this.montoVuelto = montoVuelto;
+    }
+
+    public TiposPago getTiposPago() {
+        return tiposPago;
+    }
+
+    public void setTiposPago(TiposPago tiposPago) {
+        this.tiposPago = tiposPago;
+    }
     
 }

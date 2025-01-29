@@ -40,7 +40,7 @@ public class IngresosVentaDetalleResource {
 
             
             String consulta =   " SELECT i.cod_almacen_venta,  i.cod_ingreso_venta,  i.cod_producto,pr.nombre_producto,  i.cant_ingreso, "
-                    + " i.total_monto,  i.precio_unitario,  i.costo_unitario,  i.sub_total_monto,  i.cod_estado_registro,e.nombre_estado_registro,"
+                    + " i.total_monto,  i.precio_compra,  i.precio_venta,  i.sub_total_monto,  i.cod_estado_registro,e.nombre_estado_registro,"
                     + "i.cant_restante,u.cod_unidad_medida,u.nombre_unidad_medida,"
                     + "i.cod_tipo_envase, i.nro_lote,i.fecha_fabricacion,i.fecha_vencimiento,tdp.cod_campo cod_laboratorio,tdp.nombre_campo nombre_laboratorio,p.principio_activo,"
                     + " tda.cod_campo cod_accion_terapeutica,tda.nombre_campo nombre_accion_terapeutica,i.porcentaje_descuento " +
@@ -75,17 +75,17 @@ public class IngresosVentaDetalleResource {
                 id.getProductos().setNombreProducto(rs.getString("nombre_producto"));
                 id.setCantIngreso(rs.getDouble("cant_ingreso"));
                 id.setTotalMonto(rs.getDouble("total_monto"));
-                id.setPrecioUnitario(rs.getDouble("precio_unitario"));
-                id.setCostoUnitario(rs.getDouble("costo_unitario"));
+                id.setPrecioCompra(rs.getDouble("precio_compra"));
+                id.setPrecioVenta(rs.getDouble("precio_venta"));
                 id.setTotalMonto(rs.getDouble("total_monto"));
                 id.getEstadosRegistro().setCodEstado(rs.getInt("cod_estado_registro"));
                 id.getEstadosRegistro().setNombreEstado(rs.getString("nombre_estado_registro"));
                 id.setCantRestante(rs.getDouble("cant_restante"));
                 id.getUnidadesMedida().setCodUnidadMedida(rs.getInt("cod_unidad_medida"));
                 id.getUnidadesMedida().setNombreUnidadMedida(rs.getString("nombre_unidad_medida"));
+                id.setSubTotalMonto(rs.getDouble("sub_total_monto"));
                 
                 
-                id.setCostoUnitario(rs.getDouble("costo_unitario"));
                 
                 id.getTiposEnvase().setCodTipoEnvase(rs.getInt("cod_tipo_envase"));
                 id.setNroLote(rs.getString("nro_lote"));
@@ -147,10 +147,10 @@ public class IngresosVentaDetalleResource {
             String cons =  " INSERT INTO  " +
                             "  ventas.ingresos_venta_detalle " +
                             "( cod_almacen_venta,  cod_ingreso_venta,  cod_producto,  cant_ingreso,  total_monto,  "
-                    + "precio_unitario,  costo_unitario,  sub_total_monto,  cod_estado_registro,cant_restante,cod_unidad_medida,cod_tipo_envase,nro_lote,fecha_fabricacion,fecha_vencimiento,porcentaje_descuento ) " +
+                    + "precio_compra,  precio_venta,  sub_total_monto,  cod_estado_registro,cant_restante,cod_unidad_medida,cod_tipo_envase,nro_lote,fecha_fabricacion,fecha_vencimiento,porcentaje_descuento ) " +
                             "VALUES (  '"+i.getIngresosVenta().getAlmacenesVenta().getCodAlmacenVenta()+"',  '"+i.getIngresosVenta().getCodIngresoVenta()+"', "
-                    + " '"+i.getProductos().getCodProducto()+"',  '"+i.getCantIngreso()+"',  '"+i.getTotalMonto()+"',  '"+i.getPrecioUnitario()+"',  "
-                    + "'"+i.getCostoUnitario()+"',  '"+i.getSubTotalMonto()+"',  '"+i.getEstadosRegistro().getCodEstado()+"','"+i.getCantRestante()+"',"
+                    + " '"+i.getProductos().getCodProducto()+"',  '"+i.getCantIngreso()+"',  '"+i.getTotalMonto()+"',  '"+i.getPrecioCompra()+"',  "
+                    + "'"+i.getPrecioVenta()+"',  '"+i.getSubTotalMonto()+"',  '"+i.getEstadosRegistro().getCodEstado()+"','"+i.getCantRestante()+"',"
                     + "'"+i.getUnidadesMedida().getCodUnidadMedida()+"','"+i.getTiposEnvase().getCodTipoEnvase()+"','"+i.getNroLote()+"','"+i.getFechaFabricacion()+"','"+i.getFechaVencimiento()+"','"+i.getPorcentajeDescuento()+"'); ";
 
             System.out.println("cons " + cons);
@@ -182,8 +182,8 @@ public class IngresosVentaDetalleResource {
                             " SET  " +
                             "  cant_ingreso = ?, " +
                             "  total_monto = ?, " +
-                            "  precio_unitario = ?, " +
-                            "  costo_unitario = ?, " +
+                            "  precio_compra = ?, " +
+                            "  precio_venta = ?, " +
                             "  sub_total_monto = ?, " +
                             "  cod_estado_registro = ?,"+
                             "  cant_restante= ?, "
@@ -194,12 +194,12 @@ public class IngresosVentaDetalleResource {
                             " WHERE  " +                            
                             " cod_ingreso_venta = ?    " +
                             " and cod_producto = ? ";
-            System.out.println("cons "+cons+" " + i.getCantIngreso() + " " + i.getTotalMonto() + " " + i.getTotalMonto() + " " + i.getPrecioUnitario() + " " + i.getCostoUnitario() + " " + i.getSubTotalMonto()+" " + i.getEstadosRegistro().getCodEstado()+" " + i.getCantRestante() + " " + i.getIngresosVenta().getCodIngresoVenta()+ " " + i.getProductos().getCodProducto()+" "+i.getFechaFabricacion()+" "+i.getFechaVencimiento());
+            System.out.println("cons "+cons+" " + i.getCantIngreso() + " " + i.getTotalMonto() + " " + i.getTotalMonto() + " " + i.getPrecioCompra() + " " + i.getPrecioVenta() + " " + i.getSubTotalMonto()+" " + i.getEstadosRegistro().getCodEstado()+" " + i.getCantRestante() + " " + i.getIngresosVenta().getCodIngresoVenta()+ " " + i.getProductos().getCodProducto()+" "+i.getFechaFabricacion()+" "+i.getFechaVencimiento());
             PreparedStatement statement = this.con.prepareStatement(cons);
             statement.setDouble(1,i.getCantIngreso());
             statement.setDouble(2,i.getTotalMonto());
-            statement.setDouble(3,i.getPrecioUnitario());
-            statement.setDouble(4,i.getCostoUnitario());
+            statement.setDouble(3,i.getPrecioCompra());
+            statement.setDouble(4,i.getPrecioVenta());
             statement.setDouble(5,i.getSubTotalMonto());
             statement.setInt(6,i.getEstadosRegistro().getCodEstado());
             statement.setDouble(7,i.getCantRestante());
